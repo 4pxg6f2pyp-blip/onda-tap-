@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Onda — Tarjetas NFC para negocios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#000000; --white:#ffffff; --gray:#9a9a9a; --line:#242424;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  html{scroll-behavior:smooth; scroll-padding-top:env(safe-area-inset-top,0px); background:var(--black);}
+  *{box-sizing:inherit;}
+  html,body{margin:0; height:100%;}
+  body{
+    background:var(--black); color:var(--white);
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:560px; margin:0 auto; padding:0 28px;}
+  h1,h2{font-family:'Archivo Black', 'Inter', sans-serif; font-weight:400; letter-spacing:-0.5px;}
+
+  /* HERO */
+  .hero{
+    min-height:100dvh; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:40px 28px;
+    background:var(--white); color:var(--black);
+  }
+  .hero svg{width:82%; max-width:420px; display:block; margin:0 auto;}
+  .hero p{color:#555; font-size:1.05rem; margin-top:18px; max-width:320px;}
+  .scroll-cue{margin-top:56px; display:flex; flex-direction:column; align-items:center; gap:8px; opacity:.6;}
+  .scroll-cue span{font-size:.75rem; letter-spacing:1.5px; text-transform:uppercase; color:#555;}
+  .chev{width:16px; height:16px; border-right:2px solid #555; border-bottom:2px solid #555; transform:rotate(45deg); animation:bounce 1.8s infinite;}
+  @keyframes bounce{0%,100%{transform:rotate(45deg) translate(0,0);} 50%{transform:rotate(45deg) translate(4px,4px);}}
+
+  /* SECTIONS */
+  section{padding:110px 0;}
+  section.tight{padding:80px 0;}
+  h2{font-size:1.7rem; margin:0 0 22px; line-height:1.15;}
+  p{font-size:1.05rem; line-height:1.6; color:#d8d8d8; margin:0 0 14px;}
+  .lead{color:var(--white);}
+
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.visible{opacity:1; transform:translateY(0);}
+
+  /* STEPS */
+  .step{display:flex; gap:18px; padding:22px 0; border-top:1px solid var(--line);}
+  .step:last-child{border-bottom:1px solid var(--line);}
+  .step-num{font-family:'Archivo Black', sans-serif; font-size:1.4rem; color:var(--white); min-width:34px;}
+  .step h3{margin:0 0 6px; font-size:1.05rem; font-weight:600;}
+  .step p{margin:0; font-size:.95rem;}
+  .steps .step:nth-child(1){transition-delay:0s;}
+  .steps .step:nth-child(2){transition-delay:.12s;}
+  .steps .step:nth-child(3){transition-delay:.24s;}
+  .steps .step:nth-child(4){transition-delay:.36s;}
+
+  /* GUARANTEE */
+  .guarantee{text-align:center; border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .guarantee .num{font-family:'Archivo Black', sans-serif; font-size:4.5rem; line-height:1;}
+  .guarantee p{max-width:340px; margin:14px auto 0;}
+
+  /* VALUE GRID */
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .card{border:1px solid var(--line); border-radius:14px; padding:20px 16px;}
+  .card h3{font-size:.98rem; margin:0 0 8px; font-weight:600;}
+  .card p{font-size:.88rem; margin:0; color:var(--gray);}
+  .card .icon{font-size:1.4rem; margin-bottom:10px; display:block;}
+  .grid .card:nth-child(1){transition-delay:0s;}
+  .grid .card:nth-child(2){transition-delay:.1s;}
+  .grid .card:nth-child(3){transition-delay:.2s;}
+  .grid .card:nth-child(4){transition-delay:.3s;}
+
+  /* CONTACT */
+  .price{font-family:'Archivo Black', sans-serif; font-size:2.6rem; margin:6px 0 4px;}
+  .price-note{color:var(--gray); font-size:.9rem; margin-bottom:30px;}
+  .btn{display:block; text-align:center; text-decoration:none; padding:16px 22px; border-radius:14px; font-weight:600; font-size:1rem; margin-bottom:14px; transition:transform .15s ease, opacity .15s ease;}
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--white); color:var(--black);}
+  .btn-secondary{background:transparent; color:var(--white); border:1px solid var(--line);}
+  .btn small{display:block; font-weight:400; opacity:.65; font-size:.78rem; margin-top:3px;}
+
+  footer{padding:50px 0 60px; text-align:center; border-top:1px solid var(--line);}
+  footer a{color:var(--white); text-decoration:none; font-weight:600;}
+  footer .links{display:flex; justify-content:center; gap:26px; margin-bottom:22px; font-size:.95rem;}
+  footer .tel{color:var(--gray); font-size:.85rem; text-decoration:none;}
+  footer .copy{color:#5a5a5a; font-size:.75rem; margin-top:18px;}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <svg viewBox="120 770 910 305" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Onda">
+    <text x="103" y="1078" font-family="Archivo Black" font-size="330" letter-spacing="-5" fill="#000000">onda</text>
+  </svg>
+  <p>La forma más rápida de compartir tu negocio. Un toque y ya.</p>
+  <div class="scroll-cue"><span>Desliza</span><div class="chev"></div></div>
+</section>
+
+<div class="wrap">
+
+  <section id="que-es" class="reveal">
+    <h2>¿Qué es Onda?</h2>
+    <p class="lead">Onda es una tarjeta con tecnología NFC: acercas el celular y comparte al instante tu información — sin apps, sin escribir nada, sin esperar.</p>
+    <p>Cada Onda llega lista para usarse: tu tarjeta negra con el NFC integrado, una tarjeta de bienvenida que explica cómo activarla, y un empaque pensado para sentirse tan bien como se ve.</p>
+  </section>
+
+  <section id="como-funciona">
+    <h2 class="reveal">Cómo funciona</h2>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <div><h3>Acércala</h3><p>Pon la parte trasera de tu tarjeta Onda junto al celular de la otra persona.</p></div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <div><h3>Se abre sola</h3><p>En un segundo, su teléfono abre justo lo que configuraste — sin apps, sin cámara, sin teclear nada.</p></div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <div><h3>Comparte lo que quieras</h3><p>Tus redes, tu menú, tu ubicación o tu catálogo — lo que tu negocio necesite mostrar primero.</p></div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">4</div>
+        <div><h3>Listo</h3><p>La otra persona ya tiene tu información guardada, sin haber escrito una sola letra.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="guarantee reveal tight">
+    <div class="num">20 días</div>
+    <p>Si tu tarjeta falla, la cambiamos sin costo dentro de los primeros 20 días. Así de simple.</p>
+  </section>
+
+  <section id="por-que">
+    <h2 class="reveal">Por qué Onda</h2>
+    <div class="grid">
+      <div class="card reveal"><span class="icon">💳</span><h3>Pago único</h3><p>Sin mensualidades ni renovaciones. Lo pagas una vez y es tuyo.</p></div>
+      <div class="card reveal"><span class="icon">📲</span><h3>Tecnología simple</h3><p>Funciona con el NFC que ya trae tu celular. No instalas nada.</p></div>
+      <div class="card reveal"><span class="icon">◆</span><h3>Diseño que se nota</h3><p>Empaque y tarjeta pensados para verse tan bien como funcionan.</p></div>
+      <div class="card reveal"><span class="icon">🏙️</span><h3>Hecho para lo local</h3><p>Pensado para negocios como el tuyo, no para franquicias.</p></div>
+    </div>
+  </section>
+
+  <section id="contacto" class="reveal" style="text-align:center;">
+    <h2>Consíguela</h2>
+    <div class="price">$350</div>
+    <div class="price-note">por unidad</div>
+    <a class="btn btn-primary" href="https://wa.me/5213114837782?text=Hola%2C%20tengo%20una%20pregunta%20sobre%20Onda">Pregunta por WhatsApp</a>
+    <a class="btn btn-secondary" href="https://wa.me/5213114837782?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20precio%20de%20mayoreo%20a%20partir%20de%205%20piezas">
+      Precio de mayoreo (5+ piezas)
+      <small>Escríbenos por WhatsApp</small>
+    </a>
+  </section>
+
+</div>
+
+<footer>
+  <div class="links">
+    <a href="https://www.instagram.com/tap.onda/" target="_blank" rel="noopener">Instagram</a>
+    <a href="tel:+523114837782">311 483 7782</a>
+  </div>
+  <div class="copy">© Onda — hecho en Tepic</div>
+</footer>
+
+<script>
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  els.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
