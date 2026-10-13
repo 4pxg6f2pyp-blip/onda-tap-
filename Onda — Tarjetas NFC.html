@@ -1,0 +1,535 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Onda — Tarjetas NFC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: asymmetric editorial scroll. One recurring 3D object — the Onda card itself —
+   carries the product story; thin wave-lines (echoing the brand name) divide sections.
+   Deliberately single-theme: this brand's whole identity (packaging, Instagram) is a
+   black canvas with white type, so the page commits to that world rather than toggling it. */
+:root{
+  --ink:#050506;                    /* page background */
+  --paper:#F3F2EE;                  /* primary text / foreground */
+  --muted:#8C8C92;                  /* secondary text */
+  --line: rgba(243,242,238,0.14);   /* hairlines */
+  --line-strong: rgba(243,242,238,0.26);
+  --surface:#111113;                /* raised surface (card, nav) */
+  --surface-2:#19191C;
+  --font-display:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-brand:'Archivo Black','Inter',sans-serif;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{ background:var(--paper); color:var(--ink); }
+a{ color:inherit; }
+:focus-visible{ outline:2px solid var(--paper); outline-offset:3px; border-radius:2px; }
+.wrap{ max-width:1100px; margin:0 auto; padding-inline:24px; }
+@media(min-width:720px){ .wrap{ padding-inline:48px; } }
+
+/* ---------- wordmark: name + mark, same lockup pattern as thisisneverthat®/Clubhouse™ ---------- */
+.word-onda{ font-family:var(--font-brand); font-weight:400; letter-spacing:-0.01em; display:inline-flex; align-items:flex-start; line-height:1; }
+.wo-mark{ width:.32em; height:.32em; margin-left:.08em; margin-top:.02em; flex-shrink:0; fill:var(--paper); }
+
+/* ---------- nav ---------- */
+.nav{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 24px; padding-top:calc(18px + env(safe-area-inset-top,0px));
+  background:rgba(5,5,6,.72); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+@media(min-width:720px){ .nav{ padding-inline:48px; } }
+.nav .word-onda{ font-size:1.15rem; }
+.nav-cta{
+  font-size:.82rem; font-weight:600; padding:9px 16px; border-radius:100px;
+  background:var(--paper); color:var(--ink); text-decoration:none; white-space:nowrap;
+  transition:transform .2s ease, opacity .2s ease;
+}
+.nav-cta:hover{ opacity:.86; }
+.nav-cta:active{ transform:scale(.96); }
+
+/* ---------- hero ---------- */
+.hero{ padding:72px 0 64px; }
+.hero-grid{ display:grid; gap:48px; align-items:center; }
+@media(min-width:880px){ .hero-grid{ grid-template-columns:1.1fr .9fr; gap:32px; } }
+.eyebrow{ font-size:.85rem; color:var(--muted); margin:0 0 18px; }
+.hero h1{
+  font-family:var(--font-display); font-weight:300; letter-spacing:-0.025em;
+  font-size:clamp(2.3rem,6.4vw,4rem); line-height:1.06; margin:0 0 22px;
+  text-wrap:balance;
+}
+.hero h1 em{ font-style:normal; color:var(--muted); }
+.hero p.lead{ font-size:clamp(1.02rem,2vw,1.18rem); color:var(--muted); max-width:46ch; margin:0 0 32px; line-height:1.65; }
+.hero-actions{ display:flex; flex-wrap:wrap; gap:14px; align-items:center; }
+.btn{
+  display:inline-flex; align-items:center; gap:8px; font-size:.95rem; font-weight:600;
+  padding:14px 24px; border-radius:100px; text-decoration:none; white-space:nowrap;
+  transition:transform .2s ease, opacity .2s ease, background .2s ease;
+}
+.btn-primary{ background:var(--paper); color:var(--ink); }
+.btn-primary:hover{ opacity:.88; }
+.btn-ghost{ background:transparent; color:var(--paper); border:1px solid var(--line-strong); }
+.btn-ghost:hover{ border-color:var(--paper); }
+.btn:active{ transform:scale(.97); }
+
+/* ---------- 3D card (shared component) ---------- */
+.scene{ perspective:1400px; }
+.card-float{ animation:floaty 7s ease-in-out infinite; }
+@media(prefers-reduced-motion:reduce){ .card-float{ animation:none; } }
+@keyframes floaty{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-10px);} }
+.card3d{ transform-style:preserve-3d; will-change:transform; transition:transform .1s linear; }
+.card-face{
+  width:min(340px,80vw); aspect-ratio:1.586/1; border-radius:20px;
+  background:linear-gradient(160deg,var(--surface-2),var(--surface) 70%);
+  border:1px solid var(--line-strong);
+  box-shadow:0 30px 70px -24px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.04);
+  display:flex; flex-direction:column; justify-content:space-between;
+  padding:26px 28px; margin-inline:auto;
+}
+.card-face .word-onda{ font-size:clamp(1.5rem,4vw,1.85rem); }
+.card-face .card-sub{ font-size:.78rem; color:var(--muted); display:flex; align-items:center; gap:8px; }
+.card-face .card-wave{ width:16px; height:16px; opacity:.8; }
+
+/* ---------- hero scene specifics ---------- */
+.hero-scene{ position:relative; display:flex; justify-content:center; }
+
+/* ---------- sections, generic ---------- */
+section{ padding:88px 0; }
+.section-head{ max-width:640px; margin-bottom:44px; }
+.section-head h2{
+  font-family:var(--font-display); font-weight:300; letter-spacing:-0.02em;
+  font-size:clamp(1.7rem,3.8vw,2.3rem); line-height:1.15; margin:0 0 14px; text-wrap:balance;
+}
+.section-head p{ color:var(--muted); font-size:1.02rem; line-height:1.65; max-width:52ch; margin:0; }
+
+/* wave divider */
+.wave-divider{ display:block; width:100%; max-width:720px; height:40px; margin:0 auto; }
+.wave-divider path{
+  fill:none; stroke:var(--line-strong); stroke-width:1.2;
+  stroke-dasharray:900; stroke-dashoffset:900; transition:stroke-dashoffset 1.4s ease;
+}
+.reveal.is-in .wave-divider path{ stroke-dashoffset:0; }
+
+/* generic reveal (progressive enhancement; content stays visible without JS) */
+.has-js .reveal{ opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease; }
+.has-js .reveal.is-in{ opacity:1; transform:translateY(0); }
+
+/* ---------- qué es ---------- */
+.about-grid{ display:grid; gap:28px; }
+@media(min-width:780px){ .about-grid{ grid-template-columns:1fr 1fr; gap:60px; } }
+.about-grid p{ color:var(--muted); font-size:1.04rem; line-height:1.7; margin:0 0 16px; max-width:48ch; }
+.about-grid p strong{ color:var(--paper); font-weight:500; }
+
+/* ---------- cómo funciona ---------- */
+.how{ position:relative; }
+.how-inner{ display:grid; gap:56px; align-items:center; }
+@media(min-width:900px){ .how-inner{ grid-template-columns:.95fr 1.05fr; gap:40px; min-height:72vh; } }
+.how-steps{ display:flex; flex-direction:column; gap:28px; }
+.how-step{ display:flex; gap:18px; padding-bottom:24px; border-bottom:1px solid var(--line); }
+.how-step:last-child{ border-bottom:none; }
+/* dimming only kicks in once the scroll-driven story actually initializes (see JS) —
+   without it every step stays fully legible, so the page never depends on JS to be readable */
+.how-scrolly .how-step{ opacity:.4; transition:opacity .4s ease; }
+.how-scrolly .how-step.is-active{ opacity:1; }
+.how-step-num{ font-family:var(--font-display); font-weight:300; font-size:1.3rem; color:var(--muted); min-width:28px; }
+.how-step.is-active .how-step-num{ color:var(--paper); }
+.how-step h3{ font-size:1.06rem; font-weight:600; margin:0 0 6px; }
+.how-step p{ font-size:.94rem; color:var(--muted); margin:0; line-height:1.6; max-width:40ch; }
+
+.how-stage{ position:relative; display:flex; align-items:center; justify-content:center; min-height:320px; }
+.how-phone{
+  width:min(150px,36vw); aspect-ratio:9/18.5; border-radius:28px; border:1px solid var(--line-strong);
+  background:var(--surface); position:relative; display:flex; align-items:center; justify-content:center;
+}
+.how-receiver{ opacity:0; transform:translateY(8px); transition:opacity .5s ease, transform .5s ease; display:flex; flex-direction:column; gap:7px; width:70%; }
+.how-receiver.is-shown{ opacity:1; transform:translateY(0); }
+.how-receiver-bar{ height:7px; border-radius:4px; background:var(--line-strong); }
+.how-receiver-bar:nth-child(1){ width:80%; }
+.how-receiver-bar:nth-child(2){ width:55%; }
+.how-receiver-bar:nth-child(3){ width:68%; }
+.how-card-wrap{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); }
+.how-ripple{ position:absolute; left:50%; top:50%; width:10px; height:10px; border-radius:50%;
+  border:1px solid var(--paper); opacity:0; transform:translate(-50%,-50%) scale(.4); }
+.how-ripple.is-pulsing{ animation:ripple 1.1s ease-out infinite; }
+@keyframes ripple{ 0%{ opacity:.65; transform:translate(-50%,-50%) scale(.4);} 100%{ opacity:0; transform:translate(-50%,-50%) scale(5.4);} }
+.how-check{ position:absolute; bottom:10px; left:50%; transform:translate(-50%,6px); opacity:0; font-size:.78rem; color:var(--muted); transition:opacity .4s ease, transform .4s ease; white-space:nowrap; }
+.how-check.is-shown{ opacity:1; transform:translate(-50%,0); }
+
+/* mobile-only simple how-it-works card */
+.how-mobile-card{ display:flex; justify-content:center; margin-bottom:40px; }
+@media(min-width:900px){ .how-mobile-card{ display:none; } }
+.how-desktop-stage{ display:none; }
+@media(min-width:900px){ .how-desktop-stage{ display:flex; } }
+
+/* ---------- stats ---------- */
+.stats{ border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.stats-grid{ display:grid; gap:40px; text-align:left; }
+@media(min-width:700px){ .stats-grid{ grid-template-columns:1fr 1fr; gap:64px; } }
+.stat-num{
+  font-family:var(--font-display); font-weight:300; letter-spacing:-0.02em;
+  font-size:clamp(3rem,8vw,4.6rem); line-height:1; margin:0 0 14px;
+  font-variant-numeric:tabular-nums;
+}
+.stat-block h3{ font-size:1rem; font-weight:600; margin:0 0 8px; color:var(--muted); }
+.stat-block p{ font-size:.96rem; color:var(--muted); line-height:1.65; max-width:38ch; margin:0; }
+
+/* ---------- why ---------- */
+.why-list{ display:flex; flex-direction:column; }
+.why-row{
+  display:grid; gap:10px; padding:28px 0; border-top:1px solid var(--line);
+}
+.why-list .why-row:last-child{ border-bottom:1px solid var(--line); }
+@media(min-width:760px){ .why-row{ grid-template-columns:1fr 2fr; gap:40px; align-items:baseline; } }
+.why-row h3{ font-size:1.12rem; font-weight:500; margin:0; }
+.why-row p{ font-size:.98rem; color:var(--muted); margin:0; line-height:1.65; max-width:50ch; }
+
+/* ---------- cta ---------- */
+.cta{ text-align:left; }
+.cta-box{
+  border:1px solid var(--line-strong); border-radius:24px; padding:40px 28px;
+  display:flex; flex-direction:column; gap:24px;
+}
+@media(min-width:720px){ .cta-box{ padding:56px; flex-direction:row; align-items:center; justify-content:space-between; gap:40px; } }
+.cta-price{ font-family:var(--font-display); font-weight:300; font-size:clamp(2.2rem,5vw,3rem); margin:0; }
+.cta-price span{ font-size:1rem; color:var(--muted); font-weight:400; margin-left:8px; }
+.cta-actions{ display:flex; flex-direction:column; gap:12px; min-width:240px; }
+.cta-actions .btn{ justify-content:center; }
+.cta-note{ font-size:.82rem; color:var(--muted); text-align:center; margin:0; }
+
+/* ---------- footer ---------- */
+footer{ padding:56px 0 48px; border-top:1px solid var(--line); }
+.footer-row{ display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:space-between; }
+.footer-links{ display:flex; flex-wrap:wrap; gap:24px; align-items:center; }
+.footer-links a{ text-decoration:none; font-weight:500; font-size:.95rem; }
+.footer-links a:hover{ color:var(--muted); }
+.copy-btn{
+  font:inherit; font-size:.95rem; color:var(--paper); background:none; border:none; cursor:pointer;
+  display:inline-flex; align-items:center; gap:8px; padding:0; font-variant-numeric:tabular-nums;
+}
+.copy-label{ font-size:.75rem; color:var(--muted); border:1px solid var(--line-strong); padding:2px 8px; border-radius:100px; }
+.copy-btn:hover .copy-label{ color:var(--paper); border-color:var(--paper); }
+.foot-fine{ font-size:.78rem; color:var(--muted); margin-top:28px; }
+</style>
+
+<div id="js-flag" class="has-js" style="display:none"></div>
+
+<nav class="nav">
+  <span class="word-onda">onda<svg class="wo-mark" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 14 L57 40 L82 30 L62 50 L82 70 L57 60 L50 86 L43 60 L18 70 L38 50 L18 30 L43 40 Z"/></svg></span>
+  <a class="nav-cta" href="https://wa.me/5213114837782?text=Hola%2C%20tengo%20una%20pregunta%20sobre%20Onda" target="_blank" rel="noopener">Hablar por WhatsApp</a>
+</nav>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Tarjetas NFC para negocios locales</p>
+        <h1>Tu negocio, a un <em>toque</em> de distancia.</h1>
+        <p class="lead">Onda convierte una tarjeta en la forma más rápida de compartir tu negocio. Acercas el celular y ya — sin apps, sin códigos, sin escribir nada.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#contacto">Pedir la mía</a>
+          <a class="btn btn-ghost" href="#como-funciona">Ver cómo funciona</a>
+        </div>
+      </div>
+      <div class="hero-scene scene">
+        <div class="card-float">
+          <div class="card3d" id="heroCard">
+            <div class="card-face">
+              <span class="word-onda">onda<svg class="wo-mark" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 14 L57 40 L82 30 L62 50 L82 70 L57 60 L50 86 L43 60 L18 70 L38 50 L18 30 L43 40 Z"/></svg></span>
+              <span class="card-sub">
+                <svg class="card-wave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/></svg>
+                Toca para conectar
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal" aria-hidden="true">
+    <svg class="wave-divider" viewBox="0 0 600 40" preserveAspectRatio="none"><path d="M0 20 C 75 2, 150 38, 225 20 C 300 2, 375 38, 450 20 C 525 2, 575 20, 600 20"/></svg>
+  </section>
+
+  <section id="que-es" class="about reveal">
+    <div class="section-head">
+      <h2>Una tarjeta, toda tu información</h2>
+    </div>
+    <div class="about-grid">
+      <p>Cada Onda lleva un chip NFC — la misma tecnología que ya usas para pagar con el celular. Acercas el teléfono a la tarjeta y comparte al instante tus redes, tu menú o tu ubicación.</p>
+      <p><strong>Llega lista para usarse:</strong> la tarjeta negra con el chip integrado, una tarjeta de bienvenida que explica cómo activarla, y un empaque pensado para sentirse tan bien como se ve.</p>
+    </div>
+  </section>
+
+  <section id="como-funciona" class="how">
+    <div class="section-head reveal">
+      <h2>Cómo funciona</h2>
+      <p>Cuatro pasos, sin fricción. Ningún cliente tuyo tiene que instalar nada.</p>
+    </div>
+
+    <div class="how-mobile-card">
+      <div class="scene">
+        <div class="card-float">
+          <div class="card3d">
+            <div class="card-face">
+              <span class="word-onda">onda<svg class="wo-mark" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 14 L57 40 L82 30 L62 50 L82 70 L57 60 L50 86 L43 60 L18 70 L38 50 L18 30 L43 40 Z"/></svg></span>
+              <span class="card-sub">
+                <svg class="card-wave" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/></svg>
+                Toca para conectar
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="how-inner">
+      <div class="how-steps">
+        <div class="how-step" data-step="0">
+          <span class="how-step-num">1</span>
+          <div><h3>Acércala</h3><p>Pon la parte trasera de tu Onda junto al celular de la otra persona.</p></div>
+        </div>
+        <div class="how-step" data-step="1">
+          <span class="how-step-num">2</span>
+          <div><h3>Se abre sola</h3><p>En menos de un segundo, su teléfono abre justo lo que configuraste.</p></div>
+        </div>
+        <div class="how-step" data-step="2">
+          <span class="how-step-num">3</span>
+          <div><h3>Comparte lo que quieras</h3><p>Tus redes, tu menú, tu ubicación o tu catálogo — lo que tu negocio necesite mostrar primero.</p></div>
+        </div>
+        <div class="how-step" data-step="3">
+          <span class="how-step-num">4</span>
+          <div><h3>Listo</h3><p>Ya tiene tu información guardada, sin haber escrito una sola letra.</p></div>
+        </div>
+      </div>
+
+      <div class="how-stage how-desktop-stage scene">
+        <div class="how-phone">
+          <div class="how-receiver" id="howReceiver">
+            <span class="how-receiver-bar"></span>
+            <span class="how-receiver-bar"></span>
+            <span class="how-receiver-bar"></span>
+          </div>
+          <span class="how-check" id="howCheck">Información recibida</span>
+        </div>
+        <div class="how-card-wrap">
+          <div class="card3d" id="howCard" style="width:150px;">
+            <div class="card-face" style="width:150px; padding:14px 16px;">
+              <span class="word-onda" style="font-size:.85rem;">onda<svg class="wo-mark" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 14 L57 40 L82 30 L62 50 L82 70 L57 60 L50 86 L43 60 L18 70 L38 50 L18 30 L43 40 Z"/></svg></span>
+            </div>
+          </div>
+          <div class="how-ripple" id="howRipple"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats reveal">
+    <div class="stats-grid">
+      <div class="stat-block">
+        <p class="stat-num"><span data-count="10" data-suffix=" años">0</span></p>
+        <h3>Vida útil del chip</h3>
+        <p>El NFC es pasivo: no lleva pila ni se carga. Tu Onda sigue funcionando sin mantenimiento.</p>
+      </div>
+      <div class="stat-block">
+        <p class="stat-num"><span data-count="20" data-suffix=" días">0</span></p>
+        <h3>Garantía</h3>
+        <p>Si tu tarjeta falla, la cambiamos sin costo dentro de los primeros 20 días. Así de simple.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="por-que" class="reveal">
+    <div class="section-head">
+      <h2>Por qué Onda</h2>
+    </div>
+    <div class="why-list">
+      <div class="why-row">
+        <h3>Pago único</h3>
+        <p>Sin mensualidades ni renovaciones. Lo pagas una vez y es tuyo para siempre.</p>
+      </div>
+      <div class="why-row">
+        <h3>Tecnología que ya tienes</h3>
+        <p>Funciona con el NFC que trae cualquier celular moderno. Nadie instala nada.</p>
+      </div>
+      <div class="why-row">
+        <h3>Hecha para notarse</h3>
+        <p>Empaque y tarjeta diseñados para verse tan bien como funcionan.</p>
+      </div>
+      <div class="why-row">
+        <h3>Pensada para Tepic</h3>
+        <p>Hecha para negocios locales, no para franquicias.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto" class="cta reveal">
+    <div class="section-head">
+      <h2>Consíguela</h2>
+    </div>
+    <div class="cta-box">
+      <p class="cta-price">$350<span>por unidad</span></p>
+      <div class="cta-actions">
+        <a class="btn btn-primary" href="https://wa.me/5213114837782?text=Hola%2C%20quiero%20pedir%20mi%20Onda" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+        <a class="btn btn-ghost" href="https://wa.me/5213114837782?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20precio%20de%20mayoreo%20a%20partir%20de%205%20piezas" target="_blank" rel="noopener">Precio de mayoreo (5+ piezas)</a>
+        <p class="cta-note">Respondemos por WhatsApp</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <div class="footer-row">
+    <span class="word-onda" style="font-size:1rem;">onda<svg class="wo-mark" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 14 L57 40 L82 30 L62 50 L82 70 L57 60 L50 86 L43 60 L18 70 L38 50 L18 30 L43 40 Z"/></svg></span>
+    <div class="footer-links">
+      <a href="https://www.instagram.com/tap.onda/" target="_blank" rel="noopener">Instagram</a>
+      <button class="copy-btn" type="button" data-copy="3114837782">311 483 7782 <span class="copy-label">Copiar</span></button>
+    </div>
+  </div>
+  <p class="foot-fine">© Onda — hecho en Tepic</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  document.getElementById('js-flag').remove();
+  document.documentElement.classList.add('has-js');
+
+  // generic scroll reveal
+  var reveals = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var ro = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('is-in'); ro.unobserve(e.target); }
+      });
+    }, {threshold:.15});
+    reveals.forEach(function(el){ ro.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add('is-in'); });
+  }
+
+  // count-up stats
+  function animateCount(el){
+    var target = parseInt(el.getAttribute('data-count'),10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var start = null, dur = 1200;
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts-start)/dur,1);
+      var eased = 1 - Math.pow(1-p,3);
+      el.textContent = Math.round(eased*target) + suffix;
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var countEls = document.querySelectorAll('[data-count]');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ animateCount(e.target); io.unobserve(e.target); }
+      });
+    }, {threshold:.6});
+    countEls.forEach(function(el){ io.observe(el); });
+  } else {
+    countEls.forEach(function(el){ el.textContent = el.getAttribute('data-count') + (el.getAttribute('data-suffix')||''); });
+  }
+
+  // hero pointer tilt (desktop, fine pointer, motion ok)
+  var scene = document.querySelector('.hero-scene');
+  var heroCard = document.getElementById('heroCard');
+  if(scene && heroCard && window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var rx=0, ry=0, tx=0, ty=0;
+    scene.addEventListener('pointermove', function(e){
+      var r = scene.getBoundingClientRect();
+      var px = (e.clientX - r.left)/r.width - .5;
+      var py = (e.clientY - r.top)/r.height - .5;
+      tx = px*16; ty = py*-16;
+    });
+    scene.addEventListener('pointerleave', function(){ tx=0; ty=0; });
+    (function loop(){
+      rx += (ty-rx)*.08; ry += (tx-ry)*.08;
+      heroCard.style.transform = 'rotateX('+rx+'deg) rotateY('+ry+'deg)';
+      requestAnimationFrame(loop);
+    })();
+  }
+
+  // copy phone number
+  function fallbackCopy(text, cb){
+    try{
+      var ta=document.createElement('textarea');
+      ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      cb && cb();
+    }catch(e){}
+  }
+  document.querySelectorAll('.copy-btn[data-copy]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var val = btn.getAttribute('data-copy');
+      var label = btn.querySelector('.copy-label');
+      function done(){
+        if(label){ var prev = 'Copiar'; label.textContent='Copiado'; setTimeout(function(){ label.textContent = prev; },1400); }
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(val).then(done).catch(function(){ fallbackCopy(val, done); });
+      } else { fallbackCopy(val, done); }
+    });
+  });
+
+  // desktop pinned "cómo funciona" 3D story
+  var section = document.querySelector('.how');
+  var howCard = document.getElementById('howCard');
+  var steps = document.querySelectorAll('.how-step');
+  var ripple = document.getElementById('howRipple');
+  var receiver = document.getElementById('howReceiver');
+  var check = document.getElementById('howCheck');
+  if(section && howCard && window.gsap && window.ScrollTrigger){
+    gsap.registerPlugin(ScrollTrigger);
+    var mm = gsap.matchMedia();
+    mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', function(){
+      section.classList.add('how-scrolly');
+      function setStep(idx){
+        steps.forEach(function(el,i){ el.classList.toggle('is-active', i===idx); });
+        if(idx>=1){ ripple.classList.add('is-pulsing'); } else { ripple.classList.remove('is-pulsing'); }
+        if(idx>=2){ receiver.classList.add('is-shown'); } else { receiver.classList.remove('is-shown'); }
+        if(idx>=3){ check.classList.add('is-shown'); } else { check.classList.remove('is-shown'); }
+      }
+      setStep(0);
+      var st = ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: '+=220%',
+        pin: true,
+        anticipatePin: 1,
+        scrub: .6,
+        onUpdate: function(self){
+          var idx = Math.min(3, Math.floor(self.progress*4));
+          setStep(idx);
+          gsap.to(howCard, {
+            x: idx===0 ? 0 : idx===1 ? -60 : idx===2 ? -34 : 0,
+            rotateY: idx===0 ? 0 : idx===1 ? 24 : idx===2 ? 10 : 0,
+            scale: idx>=2 ? .92 : 1,
+            duration:.5, overwrite:'auto', ease:'power2.out'
+          });
+        }
+      });
+      return function(){ section.classList.remove('how-scrolly'); st.kill(); };
+    });
+  }
+})();
+</script>
+
+</body></html>
